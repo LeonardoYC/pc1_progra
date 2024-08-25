@@ -1,0 +1,72 @@
+@model pc1_progra.Models.Operar_Bolsa
+
+@{
+    ViewBag.Title = "Operar en Bolsa";
+
+    var lista_Inversor = ViewData["lista_Inversion"] as List<Operar_Bolsa>;
+}
+
+
+<div class="container">
+    <h1 class="text-center mb-4">@ViewData["Title"]</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form id="investmentForm" asp-controller="Operar_Bolsa" asp-action="Calcular" method="post">
+                <div class="form-group text-right">
+                    <label asp-for="nomInversor">Nombre y Apellido:</label>
+                    <input asp-for="nomInversor" type="text" required /><br /><br />
+
+                    <label asp-for="emailInversor">Correo electrónico:</label>
+                    <input asp-for="emailInversor" type="text" required /><br /><br />
+
+                    <label asp-for="fechOperacion">Fecha de Operación:</label>
+                    <input asp-for="fechOperacion" type="date" required /><br /><br />
+
+                    <label>Instrumentos (Seleccione al menos uno):</label><br />
+                    <input type="checkbox" name="nomInst" value="S&P 500" id="sp500" />
+                    <label for="sp500">S&P 500 - $500</label><br />
+
+                    <input type="checkbox" name="nomInst" value="Dow Jones" id="dowjones" />
+                    <label for="dowjones">Dow Jones - $300</label><br />
+
+                    <input type="checkbox" name="nomInst" value="Bonos US" id="usbonds" />
+                    <label for="usbonds">Bonos US - $120</label><br /><br />
+
+                    <label asp-for="montoAbonar">Monto Abonar:</label>
+                    <input asp-for="montoAbonar" type="number" required /><br /><br />
+                    <button type="submit" class="btn btn-primary text-center">Invertir</button>  
+                </div>  
+            </form>
+
+            @if (lista_Inversor != null && lista_Inversor.Any())
+            {
+                <h2 class="mt-4">Resultados de la Operación</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Instrumento</th>
+                            <th>IGV</th>
+                            <th>Monto</th>
+                            <th>Comisión</th>
+                            <th>Fecha de Operación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var datos in lista_Inversor)
+                        {
+                            <tr>
+                                <td>@string.Join(", ", datos.nomInst)</td> 
+                                <td>@datos.igv</td>
+                                <td>@datos.precioInt</td>
+                                <td>@datos.comision</td>
+                                <td>@datos.fechOperacion.ToString("dd/MM/yyyy")</td> 
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <p><strong>Total a Pagar:</strong> @lista_Inversor.FirstOrDefault()?.montoTotal</p>
+                <p><strong>Saldo restante:</strong> @lista_Inversor.FirstOrDefault()?.totalPagar</p>
+            }
+        </div>
+    </div>
+</div>
